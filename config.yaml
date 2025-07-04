@@ -1,0 +1,70 @@
+# config.yaml
+# =============================================================================
+# Data Configuration
+# =============================================================================
+# Path to the CSV file containing 1‑minute OHLC data.
+data_path: "C:\\Users\\Damia\\Projects\\trading_rl\\data\\test\\TESTCOMMAFREEcleanedNQ1minCandleData.csv"
+
+trading:
+  initial_balance: 500.0        # Starting capital for each trading episode.
+  target_balance: 750.0         # Profit target (e.g., 50% profit increase).
+  min_balance: 100.0            # Account is considered bankrupt if net equity falls to this amount.
+  margin_requirement: 100.0     # Margin required per contract.
+  commission: 1.00              # Commission per contract per trade (charged at entry and exit).
+  atr_lower_bound: 0.1          # Lower bound for ATR indicator to filter out noise.
+  atr_upper_bound: 5.0          # Upper bound for ATR indicator to avoid outliers.
+  market_hours:
+    start_hour: 17            # Trading day starts at 17:00 (previous day).
+    end_hour: 16              # Trading day ends at 16:00 (current day).
+    end_minute: 0
+  indicators:
+    atr_window: 14            # Lookback period for ATR indicator.
+    ema_window: 10            # Lookback period for EMA indicator.
+    ma_window: 20             # Lookback period for Moving Average indicator.
+    volatility_window: 20     # Window for volatility calculation.
+
+environment:
+  render_mode: "human"        # Set to "human" for visual rendering during training.
+  chart_settings:
+    fixed_window_minutes: 45  # Time window (in minutes) for the candlestick chart.
+    candle_width_factor: 0.8  # Factor controlling candle width on the chart.
+
+success_metrics:
+  min_episodes: 10            # Minimum episodes per trading day required before day mastery.
+  required_success_rate: 0.90 # Success rate threshold to mark a trading day as mastered.
+  plateau_threshold: 0.20     # Percentage of episodes with no further improvement.
+  improvement_threshold: 0.05 # Minimum performance improvement needed to reset plateau counter.
+
+reward:
+  clipping: false             # Whether to apply reward clipping.
+  max_pnl_factor: 10          # Scaling factor for P&L-based rewards.
+  target_bonus: 1.0           # Bonus multiplier for reaching the profit target.
+  bankruptcy_penalty: 1.0     # Penalty applied when account balance falls below min_balance.
+
+ppo:
+  learning_rate: 0.0003       # Learning rate for PPO.
+  n_steps: 2048               # Number of steps per policy update.
+  batch_size: 64              # Batch size for training.
+  gamma: 0.99                 # Discount factor.
+  gae_lambda: 0.95            # Lambda for Generalized Advantage Estimation.
+  clip_range: 0.2             # Clipping range for PPO updates.
+  ent_coef: 0.01              # Entropy coefficient.
+  vf_coef: 0.5                # Coefficient for value function loss.
+  max_grad_norm: 0.5          # Maximum gradient norm.
+  total_timesteps: 500000     # Total timesteps for training.
+
+logging:
+  experiment_name: "mnq_experiment"  # Name of the experiment for organization.
+  model_dir: "models/"               # Directory for saving models.
+  eval_dir: "evals/"                 # Directory for saving evaluations.
+  log_dir: "logs/"                   # Directory for log files.
+  save_model_freq: 10000             # Frequency (in timesteps) to save model checkpoints.
+  eval_freq: 5000                    # Frequency of evaluations during training.
+
+adaptive_learning:
+  enabled: true
+  base_lr: 0.0003
+  min_lr_factor: 0.5
+  max_lr_factor: 2.0
+  update_frequency: 1000             # Timesteps between learning rate adjustments.
+  similarity_window: 20              # Window size used in adaptive learning calculations.
